@@ -1,0 +1,28 @@
+{
+  "name": "puppeteerexample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/app.min.js",
+  "scripts": {
+    "start": "npm run build && node dist/app.min.js",
+    "start:dev": "npx nodemon",
+    "watch": "webpack --mode development --watch",
+    "build": "webpack --mode production"
+  },
+  "keywords": [],
+  "author": "Manonero",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.8.6",
+    "nodemon": "^3.0.1",
+    "ts-loader": "^9.5.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "puppeteer-core": "^21.3.8"
+  }
+}
