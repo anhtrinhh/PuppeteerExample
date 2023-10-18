@@ -1,8 +1,8 @@
-class DIContainer {
+class ServiceCollection {
     private readonly singletonRegistry: Map<new (...args: any[]) => any, any> = new Map();
-    private readonly transientRegistry: Map<new (...args: any[]) => any, (dc: DIContainer) => any> = new Map();
+    private readonly transientRegistry: Map<new (...args: any[]) => any, (dc: ServiceCollection) => any> = new Map();
 
-    resolve<T>(dependencyType: new (...args: any[]) => T): T {
+    getService<T>(dependencyType: new (...args: any[]) => T): T {
         if (this.singletonRegistry.has(dependencyType)) {
             return this.singletonRegistry.get(dependencyType);
         } else if (this.transientRegistry.has(dependencyType)) {
@@ -12,17 +12,17 @@ class DIContainer {
         return instance;
     }
 
-    registerSingleton<T>(dependencyType: new (...args: any[]) => T, factory: ((dc: DIContainer) => T) | T) {
+    addSingleton<T>(dependencyType: new (...args: any[]) => T, factory: ((dc: ServiceCollection) => T) | T) {
         if (typeof factory == "function") {
-            this.singletonRegistry.set(dependencyType, (factory as (dc: DIContainer) => T)(this));
+            this.singletonRegistry.set(dependencyType, (factory as (dc: ServiceCollection) => T)(this));
         } else {
             this.singletonRegistry.set(dependencyType, factory);
         }
     }
 
-    registerTransient<T>(dependencyType: new (...args: any[]) => T, factory: (dc: DIContainer) => T) {
+    addTransient<T>(dependencyType: new (...args: any[]) => T, factory: (dc: ServiceCollection) => T) {
         this.transientRegistry.set(dependencyType, factory);
     }
 }
 
-export default new DIContainer();
+export default new ServiceCollection();

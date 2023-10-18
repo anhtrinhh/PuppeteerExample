@@ -1,1 +1,0 @@
-import DIContainer from './di-container';

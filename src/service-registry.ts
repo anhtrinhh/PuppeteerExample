@@ -1,0 +1,1 @@
+import DIContainer from './service-collection';

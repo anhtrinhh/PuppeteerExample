@@ -1,11 +1,11 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import DIContainer from './di-container';
-import './di-registry';
+import DIContainer from './service-collection';
+import './service-registry';
 import Program from './program';
 
 !async function() {
-    var program = DIContainer.resolve(Program);
+    var program = DIContainer.getService(Program);
     await program.main();
 }();
