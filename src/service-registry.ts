@@ -1,1 +1,1 @@
-import DIContainer from './service-collection';
+import services from './service-collection';
