@@ -13,7 +13,7 @@ class ServiceCollection {
     }
 
     addSingleton<T>(dependencyType: new (...args: any[]) => T, factory: ((dc: ServiceCollection) => T) | T) {
-        if (typeof factory == "function") {
+        if (typeof factory === "function") {
             this.singletonRegistry.set(dependencyType, (factory as (dc: ServiceCollection) => T)(this));
         } else {
             this.singletonRegistry.set(dependencyType, factory);
