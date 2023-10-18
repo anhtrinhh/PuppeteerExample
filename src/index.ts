@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import DIContainer from './di-container';
+import './di-registry';
 import Program from './program';
 
 !async function() {

@@ -1,30 +1,28 @@
-import Configurations from "./configurations";
-import HttpClient from "./infras/http-client";
-import Program from "./program";
-
-
 class DIContainer {
-    private dependencies: Map<any, any> = new Map();
+    private readonly singletonRegistry: Map<new (...args: any[]) => any, any> = new Map();
+    private readonly transientRegistry: Map<new (...args: any[]) => any, (dc: DIContainer) => any> = new Map();
 
-    register<T>(dependencyClass: new (...args: any[]) => T, instance: T) {
-        this.dependencies.set(dependencyClass, instance);
+    resolve<T>(dependencyType: new (...args: any[]) => T): T {
+        if (this.singletonRegistry.has(dependencyType)) {
+            return this.singletonRegistry.get(dependencyType);
+        } else if (this.transientRegistry.has(dependencyType)) {
+            return this.transientRegistry.get(dependencyType)(this);
+        }
+        const instance = new dependencyType();
+        return instance;
     }
 
-    resolve<T>(dependencyClass: new (...args: any[]) => T): T {
-        if (!this.dependencies.has(dependencyClass)) {
-            throw new Error(`Dependency '${dependencyClass.name}' not registered.`);
+    registerSingleton<T>(dependencyType: new (...args: any[]) => T, factory: ((dc: DIContainer) => T) | T) {
+        if (typeof factory == "function") {
+            this.singletonRegistry.set(dependencyType, (factory as (dc: DIContainer) => T)(this));
+        } else {
+            this.singletonRegistry.set(dependencyType, factory);
         }
+    }
 
-        return this.dependencies.get(dependencyClass);
+    registerTransient<T>(dependencyType: new (...args: any[]) => T, factory: (dc: DIContainer) => T) {
+        this.transientRegistry.set(dependencyType, factory);
     }
 }
 
-const container = new DIContainer();
-
-container.register(Configurations, new Configurations());
-
-container.register(HttpClient, new HttpClient());
-
-container.register(Program, new Program());
-
-export default container;
+export default new DIContainer();

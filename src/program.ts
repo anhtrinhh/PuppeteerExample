@@ -5,9 +5,9 @@ export default class Program {
         const browserWindow = await browser.open();
         if (browserWindow) {
             const page1 = (await browserWindow.pages())[0];
-            await page1.goto("https://youtube.com");
+            await page1.goto("https://github.com");
             const page2 = await browserWindow.newPage();
-            await page2.goto("https://facebook.com");
+            await page2.goto("https://gitlab.com");
         }
     }
 }
