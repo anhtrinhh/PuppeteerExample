@@ -73,7 +73,7 @@ export const LoginInfo = {
     deleteByIds: (ids: number[]): Promise<void> => {
         return new Promise<void>((resolve, reject) => {
             if (ids.length > 0) {
-                db.run(`DELETE FROM users WHERE id IN (${ids.join(', ')})`, function (err) {
+                db.run(`DELETE FROM ${LoginInfoTableName} WHERE id IN (${ids.join(', ')})`, function (err) {
                     if (err) {
                         reject(err);
                     } else {
