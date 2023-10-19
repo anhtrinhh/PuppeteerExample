@@ -1,13 +1,12 @@
-import * as browser from "./utils/browser";
+import DBConnection from "./infras/dbconnection";
+
 
 export default class Program {
+    constructor(private readonly dbConnection: DBConnection) { }
     public async main(): Promise<void> {
-        const browserWindow = await browser.open();
-        if (browserWindow) {
-            const page1 = (await browserWindow.pages())[0];
-            await page1.goto("https://github.com");
-            const page2 = await browserWindow.newPage();
-            await page2.goto("https://gitlab.com");
-        }
+        await this.dbConnection.open();
+        const infos = await this.dbConnection.list("SELECT * FROM tbl_logininfo");
+        await this.dbConnection.close();
+        console.log(infos)
     }
 }

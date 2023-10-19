@@ -1,8 +1,10 @@
-class ServiceCollection {
-    private readonly singletonRegistry: Map<new (...args: any[]) => any, any> = new Map();
-    private readonly transientRegistry: Map<new (...args: any[]) => any, (dc: ServiceCollection) => any> = new Map();
+type Constructor<T> = new (...args: any[]) => T;
 
-    getService<T>(dependencyType: new (...args: any[]) => T): T {
+class ServiceCollection {
+    private readonly singletonRegistry: Map<Constructor<any>, any> = new Map();
+    private readonly transientRegistry: Map<Constructor<any>, (dc: ServiceCollection) => any> = new Map();
+
+    getService<T>(dependencyType: Constructor<T>): T {
         if (this.singletonRegistry.has(dependencyType)) {
             return this.singletonRegistry.get(dependencyType);
         } else if (this.transientRegistry.has(dependencyType)) {
@@ -20,8 +22,26 @@ class ServiceCollection {
         }
     }
 
+    addSingletonWithDependencies(...constructors: Constructor<any>[]) {
+        if (constructors.length > 0) {
+            const [primaryConstructor, ...dependencyConstructors] = constructors;
+            const parameters = dependencyConstructors.map(d => this.getService(d));
+            this.singletonRegistry.set(primaryConstructor, new primaryConstructor(...parameters));
+        }
+    }
+
     addTransient<T>(dependencyType: new (...args: any[]) => T, factory: (dc: ServiceCollection) => T) {
         this.transientRegistry.set(dependencyType, factory);
+    }
+
+    addTransientWithDependencies(...constructors: Constructor<any>[]) {
+        if (constructors.length > 0) {
+            const [primaryConstructor, ...dependencyConstructors] = constructors;
+            this.transientRegistry.set(primaryConstructor, (_) => {
+                const parameters = dependencyConstructors.map(d => this.getService(d));
+                new primaryConstructor(...parameters)
+            });
+        }
     }
 }
 
