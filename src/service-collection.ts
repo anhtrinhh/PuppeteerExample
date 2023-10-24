@@ -39,7 +39,7 @@ class ServiceCollection {
             const [primaryConstructor, ...dependencyConstructors] = constructors;
             this.transientRegistry.set(primaryConstructor, (_) => {
                 const parameters = dependencyConstructors.map(d => this.getService(d));
-                new primaryConstructor(...parameters)
+                return new primaryConstructor(...parameters)
             });
         }
     }
